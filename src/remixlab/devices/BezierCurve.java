@@ -2,7 +2,7 @@ package remixlab.devices;
 
 import processing.core.PVector;
 /**
- * A BezierCurve is a Point like a painted by Processing function bezierVertex().......
+ * A BezierCurve is a Point like a painted by Processing function bezierVertex().
  * Needs 2 points PVector:
  * 	start point is defined of previous BezierPoint
  * 	@param point: is an anchor Point
