@@ -1,0 +1,8 @@
+
+
+
+bezier-tunnel
+Library for construction of tunnels around a Bezie curve in 3D scenes in Processing (http://processing.org/). The interactive 3D scene is build using Proscene library package (http://code.google.com/p/proscene/).
+
+REQUERIMENTS:
+	- Proscene: [http://code.google.com/p/proscene/]: Build Interactive 3D Scenes
