@@ -25,7 +25,7 @@ public class Tunnel extends PApplet {
 		float min=-100;
 		float max=100;
 		
-		//Array of BezierCurve(anchorPoint,controlPoint)
+		//Array of BezierCurve(anchorPoint,controlPoint)-->
 		BezierCurve points[];
 		points=new BezierCurve[curvas];
 		for(int i=0;i<curvas;i++){
