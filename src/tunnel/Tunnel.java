@@ -48,6 +48,7 @@ public class Tunnel extends PApplet {
 		//TODO: Parametrize the cone detail
 		//TODO: Parametrize the strokes of tunnel and the fill
 		//TODO: Parametrize the strokes of Bezier curves
+		//TODO: Parametrize the axis of Bezier Curves
 		
 
 	}
@@ -55,8 +56,6 @@ public class Tunnel extends PApplet {
 	public void draw() {
 		background(0);
 		lights();
-		
-		
 		tunnel.draw();
 		
 		
