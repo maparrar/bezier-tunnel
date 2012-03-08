@@ -1,5 +1,7 @@
 package tunnel;
 
+import java.awt.Color;
+
 import processing.core.PApplet;
 import processing.core.PGraphics3D;
 import processing.core.PVector;
@@ -22,31 +24,37 @@ public class Tunnel extends PApplet {
 
 		
 		int curvas=5;
-		float min=-100;
-		float max=100;
+		float minA=-100;
+		float maxA=100;
 		
-		//Array of BezierCurve(anchorPoint,controlPoint)-->
+		float minC=-200;
+		float maxC=200;
+		
+		//Array of BezierCurve(anchorPoint,controlPoint)
 		BezierCurve points[];
 		points=new BezierCurve[curvas];
 		for(int i=0;i<curvas;i++){
-			PVector anchor=new PVector(random(min,max),random(min,max),random(min,max));
-			PVector control=new PVector(random(min,max),random(min,max),random(min,max));
-			points[i]=new BezierCurve(anchor,control);
+			PVector anchor=new PVector(random(minA,maxA),random(minA,maxA),random(minA,maxA));
+			PVector control=new PVector(random(minC,maxC),random(minC,maxC),random(minC,maxC));
+			Color color=new Color((int)random(0,255),(int)random(0,255),(int)random(0,255));
+			points[i]=new BezierCurve(anchor,control,color);
 		}
 
 		PVector init=new PVector(0,0,0);
-		tunnel=new BezierTunnel(this,init,points,20,50);
+		tunnel=new BezierTunnel(this,scene,init,points,20,20);
+		
+		//TODO: Parametrize the Lights
+		//TODO: Parametrize the Camera
+		//TODO: Parametrize the cone detail
+		//TODO: Parametrize the strokes of tunnel and the fill
+		//TODO: Parametrize the strokes of Bezier curves
+		
 
 	}
 
 	public void draw() {
 		background(0);
-		fill(204, 102, 0);
-//		box(20, 30, 50);
-//		drawCone(0, 3, 15, 15, 30);
-		
-//		scene.cylinder(10, 10);
-		
+		lights();
 		
 		
 		tunnel.draw();

@@ -1,7 +1,9 @@
 package remixlab.devices;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
+import remixlab.proscene.*;
 
 /**
  * A BezierTunnel is a tunnel build around a Bezier path.
@@ -12,27 +14,30 @@ public class BezierTunnel{
 	BezierCurve curves[];
 	float radius;
 	int parts;		//Parts to divide each curve
+	Scene scene;
 	/**
 	 * BezierTunnel Constructor
 	 * */
-	public BezierTunnel(PApplet p){
+	public BezierTunnel(PApplet p,Scene sc){
 		parent=p;
 		start=new PVector(0, 0, 0);
 		radius=10;
 		parts=5;
+		scene=sc;
 	}
 	/**
 	 * BezierTunnel Constructor
 	 * 	@param point: is the first point of BezierTunnel
 	 * 	@param curve: is a BezierCurve with three PVector inside (two control points and an anchor point)
 	 * */
-	public BezierTunnel(PApplet p,PVector point,BezierCurve curve){
+	public BezierTunnel(PApplet p,Scene sc,PVector point,BezierCurve curve){
 		parent=p;
 		start=point;
 		curves=new BezierCurve[1];
 		curves[0]=curve;
 		radius=10;
 		parts=5;
+		scene=sc;
 	}
 	/**
 	 * BezierTunnel Constructor
@@ -40,12 +45,13 @@ public class BezierTunnel{
 	 * 	@param bCurves: is an array of BezierCurves
 	 * 
 	 * */
-	public BezierTunnel(PApplet p,PVector point,BezierCurve[] bCurves){
+	public BezierTunnel(PApplet p,Scene sc,PVector point,BezierCurve[] bCurves){
 		parent=p;
 		start=point;
 		curves=bCurves;
 		radius=10;
 		parts=5;
+		scene=sc;
 	}
 	/**
 	 * BezierTunnel Constructor
@@ -54,12 +60,13 @@ public class BezierTunnel{
 	 * 	@param radius: radius of tunnel
 	 * 	@param parts: Parts to divide each curve
 	 * */
-	public BezierTunnel(PApplet p,PVector point,BezierCurve[] bCurves,float tRadius,int tParts){
+	public BezierTunnel(PApplet p,Scene sc,PVector point,BezierCurve[] bCurves,float tRadius,int tParts){
 		parent=p;
 		start=point;
 		curves=bCurves;
 		radius=tRadius;
 		parts=tParts;
+		scene=sc;
 	}
 	
 	
@@ -79,8 +86,10 @@ public class BezierTunnel{
 		//Draws the tunnel
 		for(int i=0;i<curves.length;i++){
 			drawTunnel(curves[i]);
+			
+			
+			
 		}
-		
 		
 		
 		
@@ -143,6 +152,7 @@ public class BezierTunnel{
 	 * @param BezierCurve bPoint: Object BezierPoint with anchor point and two control points 
 	 * */
 	public void drawCurve(BezierCurve b){
+		parent.stroke(b.color.getRed(),b.color.getGreen(),b.color.getBlue());
 		parent.bezier(b.start.x,b.start.y,b.start.z, b.ctrl1.x,b.ctrl1.y,b.ctrl1.z,  b.ctrl2.x,b.ctrl2.y,b.ctrl2.z,  b.end.x,b.end.y,b.end.z);
 	}
 	
@@ -176,15 +186,40 @@ public class BezierTunnel{
 	
 	
 	public void drawTunnel(BezierCurve b){
-		PVector temp=new PVector(0,0,0);
+		PVector init=b.start;
+		parent.stroke(b.color.getRed(),b.color.getGreen(),b.color.getBlue());
+		parent.fill(b.color.getRed(),b.color.getGreen(),b.color.getBlue());
+		
+		parent.noStroke();
+		
 		float t=(1/(float)parts);
-		for(int i=0;i<parts-1;i++){
-			PVector vec=b.getPoint(i*t);
-			parent.stroke(255, 102, 0);
+		//Iterate for each part of the curve
+		for(int i=0;i<parts;i++){
+			PVector end=b.getPoint(i*t);
 			
-			cone(temp,vec);
 			
-			temp=vec;
+			float dist=PApplet.dist(init.x,init.y,init.z,end.x,end.y,end.z);
+			
+			InteractiveFrame iFrame = new InteractiveFrame(scene);
+			iFrame.setPosition(init);
+			parent.pushMatrix();
+			parent.pushStyle();
+				PVector to = PVector.sub(end, iFrame.position());
+				//new Quaternion(Unitary_vector_of_axis, vector_to_aim)
+			    iFrame.setOrientation(new Quaternion(new PVector(0,0,1), to));
+			    iFrame.applyTransformation(); //optimum
+			    
+			    
+			    //scene.drawAxis(10*1.3f);
+			    scene.cone(20,0,0,5,5,dist);
+			    //parent.ellipse(0,0,5,5);
+			    
+			    
+		    parent.popStyle();
+		    parent.popMatrix();
+		    
+			
+			init=end;
 		}
 	}
 	
@@ -210,7 +245,7 @@ public class BezierTunnel{
 		parent.rotateY(0);
 		parent.rotateZ(0);
 		parent.scale(r,r);
-		parent.beginShape(parent.TRIANGLES);
+		parent.beginShape(PConstants.TRIANGLES);
 		for (int i = 0; i < coneDetail; i++) {
 			parent.vertex(unitConeX[i], unitConeY[i], (float) 0.0);
 			parent.vertex(unitConeX[i + 1], unitConeY[i + 1], (float) 0.0);

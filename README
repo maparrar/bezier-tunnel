@@ -2,7 +2,7 @@ Bezier Tunnel v.0.0.1
 Copyright (C) 2012  National University of Colombia
 @author Miguel Alejandro Parra Romero [maparrar@gmail.com]
 
-Library for construction of tunnels around a Bezie curve in 3D scenes
+Library for construction of tunnels around a Cubic Bezie curve in 3D scenes
 in Processing (http://processing.org/). The interactive 3D scene is 
 build using Proscene library package (http://code.google.com/p/proscene/).
 

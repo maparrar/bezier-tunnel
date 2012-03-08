@@ -1,5 +1,7 @@
 package remixlab.devices;
 
+import java.awt.Color;
+
 import processing.core.PVector;
 /**
  * A BezierCurve is a Point like a painted by Processing function bezierVertex().
@@ -11,6 +13,7 @@ import processing.core.PVector;
  * */
 public class BezierCurve {
 	PVector start,end,ctrl1,ctrl2;
+	Color color;
 	/**
 	 * BezierCurve Constructor
 	 * */
@@ -24,13 +27,26 @@ public class BezierCurve {
 	 * BezierCurve Constructor
 	 * 	@param point: is an anchor Point
 	 * 	@param ctrl1: is the first control point
-	 * 	@param ctrl2: is the second control point
 	 * */
 	public BezierCurve(PVector p,PVector c1){
 		start=new PVector(0, 0, 0);
 		end=p;
 		ctrl1=c1;
 		ctrl2=new PVector(0, 0, 0);
+		color=new Color(0,0,255);
+	}
+	/**
+	 * BezierCurve Constructor
+	 * 	@param point: is an anchor Point
+	 * 	@param ctrl1: is the first control point
+	 *	@param col: is the Bezier Curve color
+	 * */
+	public BezierCurve(PVector p,PVector c1,Color col){
+		start=new PVector(0, 0, 0);
+		end=p;
+		ctrl1=c1;
+		ctrl2=new PVector(0, 0, 0);
+		color=col;
 	}
 	/**
 	 * BezierCurve Constructor
@@ -43,6 +59,7 @@ public class BezierCurve {
 		end=p;
 		ctrl1=c1;
 		ctrl2=c2;
+		color=new Color(0,0,255);
 	}
 	/**
 	 * BezierCurve Constructor
@@ -55,6 +72,7 @@ public class BezierCurve {
 		end=new PVector(px,py,py);
 		ctrl1=new PVector(c1x,c1y,c1y);
 		ctrl2=new PVector(c2x,c2y,c2y);
+		color=new Color(0,0,255);
 	}
 	
 	
@@ -69,17 +87,10 @@ public class BezierCurve {
 		p1=ctrl1;
 		p2=ctrl2;
 		p3=end;
-		//Using Cubic Bézier curves Theory
+		//Using Cubic Bezier curves Theory
 		float x=(float) ((p0.x*Math.pow(1-t,3))+(3*p1.x*t*Math.pow(1-t,2))+(3*p2.x*Math.pow(t,2)*(1-t))+(p3.x*Math.pow(t,3)));
 		float y=(float) ((p0.y*Math.pow(1-t,3))+(3*p1.y*t*Math.pow(1-t,2))+(3*p2.y*Math.pow(t,2)*(1-t))+(p3.y*Math.pow(t,3)));
 		float z=(float) ((p0.z*Math.pow(1-t,3))+(3*p1.z*t*Math.pow(1-t,2))+(3*p2.z*Math.pow(t,2)*(1-t))+(p3.z*Math.pow(t,3)));
-		
-//		System.out.println("t: "+t);
-//		System.out.println("p1.x: "+p1.x);
-//		System.out.println("p2.x: "+p2.x);
-//		System.out.println("p3.x: "+p3.x);
-//		System.out.println("1-t: "+(1-t));
-		
 		return new PVector(x,y,z);
 	}
 }
