@@ -156,14 +156,10 @@ public class BezierTunnel {
 	 * */
 	public void drawCurve(BezierCurve b) {
 		parent.stroke(b.color.getRed(), b.color.getGreen(), b.color.getBlue());
-		parent.bezier(
-			b.start.x, b.start.y, b.start.z,
-			b.ctrl1.x, b.ctrl1.y, b.ctrl1.z,
-			b.ctrl2.x, b.ctrl2.y, b.ctrl2.z,
-			b.end.x, b.end.y, b.end.z
-		);
-		
-		
+		parent.bezier(b.start.x, b.start.y, b.start.z, b.ctrl1.x, b.ctrl1.y,
+				b.ctrl1.z, b.ctrl2.x, b.ctrl2.y, b.ctrl2.z, b.end.x, b.end.y,
+				b.end.z);
+
 	}
 
 	/**
@@ -198,6 +194,7 @@ public class BezierTunnel {
 			float dist = PApplet.dist(init.x, init.y, init.z, end.x, end.y,
 					end.z);
 
+			// InteractiveFrame iFrame = new InteractiveFrame(scene);
 			InteractiveFrame iFrame = new InteractiveFrame(scene);
 			iFrame.setPosition(init);
 			parent.pushMatrix();
@@ -208,8 +205,10 @@ public class BezierTunnel {
 			iFrame.applyTransformation(); // optimum
 
 			// scene.drawAxis(10*1.3f);
-			scene.cone(20, 0, 0, 5, 5, dist);
+			//scene.cone(20, 0, 0, 5, 5, dist);
 			// parent.ellipse(0,0,5,5);
+			
+			weirdCylinder(20,5,dist,init,end);
 
 			parent.popStyle();
 			parent.popMatrix();
@@ -230,18 +229,58 @@ public class BezierTunnel {
 		iFrame.applyTransformation(); // optimum
 
 		// scene.drawAxis(10*1.3f);
-		scene.cone(20, 0, 0, 5, 5, dist);
+		//scene.cone(20, 0, 0, 5, 5, dist);
 		// parent.ellipse(0,0,5,5);
+		
+		
+		
+		//weirdCylinder(10,20,dist,init,b.end);
 
 		parent.popStyle();
 		parent.popMatrix();
 
 	}
 
-	/** Build from cone function of Proscene
-	 * Draws a truncated cone along the {@link #renderer()} positive {@code z}
-	 * axis, with its base centered at {@code (x,y)}, height {@code h}, and
-	 * radii {@code r1} and {@code r2} (basis and height respectively).
+	// By: Jean Pierre Charalambos:
+	// w is the radius of the cylinder and h is its height.
+	// n is the normal of the plane that intersects the cylinder at z=0
+	// m is the normal of the plane that intersects the cylinder at z=h
+	// eqs took from: http://en.wikipedia.org/wiki/Line-plane_intersection
+	public void weirdCylinder(int detail, float w, float h, PVector n, PVector m) {
+		PVector Pn0 = new PVector(0, 0, 0);
+		PVector l0 = new PVector();
+		PVector Pm0 = new PVector(0, 0, h);
+		PVector l = new PVector(0, 0, 1);
+		PVector pn = new PVector();
+		PVector pm = new PVector();
+		float x, y, d;
+
+		parent.pushStyle();
+		parent.noStroke();
+		parent.beginShape(PConstants.QUAD_STRIP);
+		for (float t = 0; t <= detail; t++) {
+			x = (float) (w * Math.cos(t * (Math.PI*Math.PI) / detail));
+			y = (float) (w * Math.sin(t * (Math.PI*Math.PI) / detail));
+			l0.set(x, y, 0);
+
+			d = (n.dot(PVector.sub(Pn0, l0))) / (l.dot(n));
+			pn = PVector.add(PVector.mult(l, d), l0);
+			parent.vertex(pn.x, pn.y, pn.z);
+
+			l0.z = h;
+			d = (m.dot(PVector.sub(Pm0, l0))) / (l.dot(m));
+			pm = PVector.add(PVector.mult(l, d), l0);
+			parent.vertex(pm.x, pm.y, pm.z);
+		}
+		parent.endShape();
+		parent.popStyle();
+	}
+
+	/**
+	 * Build from cone function of Proscene Draws a truncated cone along the
+	 * {@link #renderer()} positive {@code z} axis, with its base centered at
+	 * {@code (x,y)}, height {@code h}, and radii {@code r1} and {@code r2}
+	 * (basis and height respectively).
 	 * 
 	 * @see #cone(int, float, float, float, float)
 	 */
@@ -252,7 +291,7 @@ public class BezierTunnel {
 		float secondCircleY[] = new float[detail + 1];
 
 		for (int i = 0; i <= detail; i++) {
-			float a1 = (float) ((Math.PI*2) * i / detail);
+			float a1 = (float) ((Math.PI * 2) * i / detail);
 			firstCircleX[i] = r1 * (float) Math.cos(a1);
 			firstCircleY[i] = r1 * (float) Math.sin(a1);
 			secondCircleX[i] = r2 * (float) Math.cos(a1);
