@@ -2,12 +2,10 @@ package remixlab.devices;
 
 import java.awt.Color;
 import java.util.ArrayList;
-
 import processing.core.PApplet;
 import processing.core.PVector;
-import remixlab.proscene.InteractiveFrame;
-import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
+
 /**
  * A BezierCurve is a curve like a painted by Processing function bezier().
  * */
@@ -18,10 +16,10 @@ public class BezierCurve {
 	PVector fin;		// Final vector of the curve
 	PVector ctrl1;		// First control point
 	PVector ctrl2;		// Last control point
-	PVector normalIni;	// Normal vector to a plane between last curve and this
-	PVector normalFin;	// Normal vector to a plane between this curve and next
 	Color color;		// Color to this curve 
 	int nParts;			// Parts to divide each curve
+	int detail;			// Detail of the cylinder
+	float radius;			// Radius of the cylinder
 	ArrayList<BezierPart> parts = new ArrayList<BezierPart>();
 	
 	/**
@@ -38,8 +36,6 @@ public class BezierCurve {
 		ctrl2=new PVector(0, 0, 0);
 		color=new Color(0,0,255);
 		nParts=30;
-		normalIni=fin;
-		normalFin=fin;
 	}
 	/**
 	 * BezierCurve Constructor
@@ -47,7 +43,7 @@ public class BezierCurve {
 	 * 	@param ctrl1: is the first control point
 	 *	@param col: is the Bezier Curve color
 	 * */
-	public BezierCurve(PApplet p,Scene sc,PVector vFin,PVector c1,Color col,int cantParts){
+	public BezierCurve(PApplet p,Scene sc,PVector vFin,PVector c1,Color col,int cantParts,int det,float radi){
 		parent = p;
 		scene = sc;
 		ini=new PVector(0, 0, 0);
@@ -56,13 +52,12 @@ public class BezierCurve {
 		ctrl2=new PVector(0, 0, 0);
 		color=col;
 		nParts=cantParts;
-		normalIni=fin;
-		normalFin=fin;
+		detail=det;
+		radius=radi;
 	}
 	
-	
 	/**
-	 * Calculates the parts of the curve, with normal vectors
+	 * Calculates the parts of the curve
 	 * */
 	public void calculate(){
 		parts.clear();
@@ -70,61 +65,10 @@ public class BezierCurve {
 		float t = (1 / (float) nParts);
 		PVector iniPoint=ini;
 		PVector finPoint;
-		
-		PVector normal;
 		for (int i = 0; i < nParts; i++) {
 			iniPoint = getPoint(i * t);
 			finPoint = getPoint((i+1) * t);
-			
-			if(i==0){
-				//part=new BezierPart(iniPoint,finPoint,new PVector(0,0,0));
-				//finPoint = getPoint((i+1) * t);
-				normal=normalIni;
-			}else{
-				BezierPart prevPart=parts.get(i-1);
-				//Calculates the normal between parts
-				normal=PVector.add(prevPart.ini,iniPoint);
-				//part=new BezierPart(iniPoint,finPoint,new PVector(0,0,0));
-				prevPart.normalFin=normal;
-				
-				
-			}
-			
-			
-			
-			
-			part=new BezierPart(iniPoint,finPoint,normal);
-			
-			
-			
-			
-			
-			//part.ini=new PVector(0,0,0);
-			
-			parent.pushMatrix();
-				parent.pushStyle();
-					//Create an InteractiveFrame to draw the cylinder
-					InteractiveFrame iFrame = new InteractiveFrame(scene);
-					iFrame.setPosition(part.ini);
-					PVector to = PVector.sub(part.fin, iFrame.position());
-					iFrame.setOrientation(new Quaternion(new PVector(0, 0, 1), to));
-					iFrame.applyTransformation();
-					scene.drawAxis(10*1.3f);
-					
-					
-					
-					//part.ini=iFrame.transformOf(part.ini);
-					//part.fin=iFrame.transformOf(part.fin);
-					
-				parent.popStyle();
-			parent.popMatrix();
-		
-			
-			
-			
-			
-			
-			
+			part=new BezierPart(parent,scene,iniPoint,finPoint,color,detail,radius);
 			parts.add(part);
 		}
 	}
@@ -148,6 +92,17 @@ public class BezierCurve {
 	}
 	
 	/**
+	 * Connect this BezierCurve to the previous.
+	 * 1. Set initial to prevCurve.fin
+	 * 2. Set the second control point of prevCurve with the first control point of this curve
+	 * @param prevCurve is the previous BezierCurve in the tunnel with
+	 * */
+	public void connect(BezierCurve prevCurve){
+		ini=prevCurve.fin;
+		prevCurve.ctrl2 = new PVector(2 * (prevCurve.fin.x) - ctrl1.x, 2 * (prevCurve.fin.y)- ctrl1.y, 2 * (prevCurve.fin.z) - ctrl1.z);
+	}
+	
+	/**
 	 * Return a string with data of the curve
 	 * */
 	public String toString(){
@@ -156,8 +111,6 @@ public class BezierCurve {
 		String fi="fin:("+fin.x+","+fin.y+","+fin.z+")\n";
 		String c1="ctrl1:("+ctrl1.x+","+ctrl1.y+","+ctrl1.z+")\n";
 		String c2="ctrl2:("+ctrl2.x+","+ctrl2.y+","+ctrl2.z+")\n";
-		String ni="normalIni:("+normalIni.x+","+normalIni.y+","+normalIni.z+")\n";
-		String nf="normalFin:("+normalFin.x+","+normalFin.y+","+normalFin.z+")\n";
-		return "*****\n"+pa+in+fi+c1+c2+ni+nf+"*****";
+		return "*****\n"+pa+in+fi+c1+c2+"*****";
 	}
 }

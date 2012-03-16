@@ -8,10 +8,7 @@ import remixlab.devices.*;
 
 // TODO: Parameterize the Lights
 // TODO: Parameterize the Camera
-// TODO: Parameterize the cone detail
-// TODO: Parameterize the strokes of tunnel and the fill
-// TODO: Parameterize the strokes of Bezier curves
-// TODO: Parameterize the axis of Bezier Curves
+// TODO: Avoid the intersections
 
 @SuppressWarnings("serial")
 public class Tunnel extends PApplet {
@@ -27,8 +24,13 @@ public class Tunnel extends PApplet {
 		int curves = 5;
 		//In many parts divide each BezierCurve
 		int parts=60;
+		//Detail of the Tunnel
+		int detail=50;
+		//Radius
+		float radius=5;
+		
 		//Tunnel declaration
-		tunnel = new BezierTunnel(this,scene);
+		tunnel = new BezierTunnel(this,scene,parts,detail,radius);
 		
 		//Maximum and Minimum to random bezier curves
 		float minA = -100;
@@ -41,7 +43,7 @@ public class Tunnel extends PApplet {
 			PVector control = new PVector(random(minC, maxC),random(minC, maxC), random(minC, maxC));
 			Color color = new Color((int) random(0, 255), (int) random(0, 255),(int) random(0, 255));
 			//Add the curve to the Tunnel
-			tunnel.addCurve(new BezierCurve(this,scene,anchor,control,color,parts));
+			tunnel.addCurve(anchor,control,color);
 		}
 	}
 	public void draw() {
