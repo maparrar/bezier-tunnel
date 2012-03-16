@@ -2,48 +2,71 @@ package tunnel;
 
 import java.awt.Color;
 
+
+
 import processing.core.PApplet;
 import processing.core.PGraphics3D;
 import processing.core.PVector;
+//import processing.opengl.*;
+
+//import codeanticode.glgraphics.*;
 
 import remixlab.proscene.*;
 import remixlab.devices.*;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class Tunnel extends PApplet {
 
 	Scene scene;
-	public PGraphics3D pg3d;
+	//GLGraphicsOffScreen canvas;
+	
+	//public PGraphics3D pg3d;
 
 	BezierTunnel tunnel;
 
 	public void setup() {
 		size(800, 600, P3D);
+		//size(800, 600, GLConstants.GLGRAPHICS); 
+		
+//		canvas = new GLGraphicsOffScreen(this, width, height);
+//		scene = new Scene(this, canvas);  
+		
+		
 		// Scene instantiation
 		scene = new Scene(this);
 
-		int curvas = 5;
+		
+		//Parameters
+		int curves = 5;
+		
+		
+		
+		
+		//Parts of each BezierCurve
+		int parts=60;
+		
+		
+		//Tunnel declaration
+		tunnel = new BezierTunnel(this, scene);
+		
+		
+		//Maxs and Mins to random bezier curves
 		float minA = -100;
 		float maxA = 100;
-
 		float minC = -200;
 		float maxC = 200;
-
-		// Array of BezierCurve(anchorPoint,controlPoint)
-		BezierCurve points[];
-		points = new BezierCurve[curvas];
-		for (int i = 0; i < curvas; i++) {
+		//Randomize Bezier Curves
+		for (int i = 0; i < curves; i++) {
 			PVector anchor = new PVector(random(minA, maxA),
 					random(minA, maxA), random(minA, maxA));
 			PVector control = new PVector(random(minC, maxC),
 					random(minC, maxC), random(minC, maxC));
 			Color color = new Color((int) random(0, 255), (int) random(0, 255),
 					(int) random(0, 255));
-			points[i] = new BezierCurve(anchor, control, color);
+			tunnel.addCurve(new BezierCurve(anchor, control, color,parts));
 		}
 
-		PVector init = new PVector(0, 0, 0);
-		tunnel = new BezierTunnel(this, scene, init, points, 20, 20);
+		
 
 		// TODO: Parametrize the Lights
 		// TODO: Parametrize the Camera
@@ -66,53 +89,224 @@ public class Tunnel extends PApplet {
 		 * (3,4)
 		 * */
 		//drawCone(0, 0, 20, 25, 50, 60, new PVector(0, 4));
+		
+		//Testing Weird Cylinder
+		//tunnel.weirdCylinder(detail, radius,height, n, m)
+		
+		
+		//tunnel.weirdCylinder(50,30,50,new PVector(0,0,1),new PVector(1,550,200));
+		
+		
+		
+		
+/**		
+		
+		
+		//Variables frame 1
+		InteractiveFrame frame1 = new InteractiveFrame(scene);
+		PVector frame1posIni=new PVector(-20,30,20);
+		frame1.setPosition(frame1posIni);
+		stroke(0,0,255);
+//		line(0,0,0,frame1posIni.x,frame1posIni.y,frame1posIni.z);
+		
+		//Variables frame 2
+		InteractiveFrame frame2 = new InteractiveFrame(scene);
+		PVector frame2posIni=new PVector(50,50,50);
+		frame2.setPosition(frame2posIni);
+		stroke(0,255,0);
+//		line(0,0,0,frame2posIni.x,frame2posIni.y,frame2posIni.z);
+		
+		//Variables frame 3
+		InteractiveFrame frame3 = new InteractiveFrame(scene);
+		PVector frame3posIni=new PVector(100,50,100);
+		frame3.setPosition(frame3posIni);
+		stroke(255,0,0);
+//		line(0,0,0,frame3posIni.x,frame3posIni.y,frame3posIni.z);
+		
+		//Variables frame 4
+		PVector frame4posIni=new PVector(80,-50,50);
+		
+		
+		
+		//AUX: Pinta los vectores entre los vetores de los Frames
+		strokeWeight(2);
+		stroke(112,134,45);
+		line(frame1posIni.x,frame1posIni.y,frame1posIni.z,frame2posIni.x,frame2posIni.y,frame2posIni.z);
+		line(frame2posIni.x,frame2posIni.y,frame2posIni.z,frame3posIni.x,frame3posIni.y,frame3posIni.z);
+		line(frame3posIni.x,frame3posIni.y,frame3posIni.z,frame4posIni.x,frame4posIni.y,frame4posIni.z);
+		
+		//AUX: Vectores en cada Frame
+		PVector test1=new PVector(0,0,20);
+		PVector test2=new PVector(0,20,20);
+		PVector test3=new PVector(0,20,20);
+		
+		
+		
+		
+		
+		
+		
+		
+		//Dibuja el FRAME 1
+		pushMatrix();
+			pushStyle();
+				PVector to2 = PVector.sub(frame2posIni, frame1.position());
+				frame1.setOrientation(new Quaternion(new PVector(0, 0, 1), to2));
+				frame1.applyTransformation();
+				scene.drawAxis(10*1.3f);
+				//Pinta un vector de prueba
+				stroke(255,0,0);
+				line(0,0,0,test1.x,test1.y,test1.z);
+				
+				
+				
+				
+			popStyle();
+		popMatrix();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//Transformaciones
+		
+		//Transformación al mundo
+//		PVector trans=frame1.inverseTransformOf(test1);
+//		stroke(255,0,255);
+//		line(0,0,0,trans.x,trans.y,trans.z);
 
-	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		PVector trans=frame2.transformOf(new PVector(0,0,20));
+//		stroke(255,0,0);
+//		line(0,0,0,trans.x,trans.y,trans.z);
+//		stroke(255,0,255);
+//		line(test2.x,test2.y,test2.z,trans.x,trans.y,trans.z);
+		
+				
+		//Dibuja el FRAME 2
+		pushMatrix();
+			pushStyle();
+				PVector to3 = PVector.sub(frame3posIni, frame2.position());
+				frame2.setOrientation(new Quaternion(new PVector(0, 0, 1), to3));
+				frame2.applyTransformation();
+				scene.drawAxis(10*1.3f);
+				
+				
+				
+				//Pinta un vector de prueba
+				stroke(0,255,255);
+				line(0,0,0,test2.x,test2.y,test2.z);
+			popStyle();
+		popMatrix();
+		
+		
+		
+		
+		
+		
+		//Pintando de nuevo en el frame1
+		pushMatrix();
+			//Aplica la transformación del frame1 a la escena
+			frame1.applyTransformation();		
+			
+			//Transformación del frame2 al 1
+			PVector trans1=frame1.transformOfFrom(new PVector(0,0,10), frame2);
+			stroke(0,255,255);
+			line(0,0,0,trans1.x,trans1.y,trans1.z);
+			
+			//ángulo en radianes
+			PVector vecZ=new PVector(0,0,10);
+			float angulo=PVector.angleBetween(vecZ, trans1);
+			
+			
+			//Vector medio
+			PVector medio=PVector.add(vecZ,trans1);
+			stroke(134,15,200);
+			line(0,0,0,medio.x,medio.y,medio.z);
+			
+			//Dibuja el cilindro raro
+			//tunnel.weirdCylinder(detail, radius,height, n, m)
+			float dist=PVector.dist(frame1posIni,frame2posIni);
+			tunnel.weirdCylinder(100,5,dist,new PVector(0,0,10),medio);
+			
+		popMatrix();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//Dibuja el FRAME 3
+		pushMatrix();
+			pushStyle();
+				PVector to4 = PVector.sub(frame4posIni, frame3.position());
+				frame3.setOrientation(new Quaternion(new PVector(0, 0, 1), to4));
+				frame3.applyTransformation();
+				scene.drawAxis(10*1.3f);
+				//Pinta un vector de prueba
+				stroke(255);
+//				line(0,0,0,test3.x,test3.y,test3.z);
+			popStyle();
+		popMatrix();
+		
+		
+		
+		//Pintando de nuevo en el frame2
+		pushMatrix();
+			//Aplica la transformación del frame2 a la escena
+			frame2.applyTransformation();		
+			
+			//Transformación del frame3 al 2
+			PVector trans2=frame2.transformOfFrom(new PVector(0,0,10), frame3);
+			stroke(0,255,255);
+			line(0,0,0,trans2.x,trans2.y,trans2.z);
+			
+			//ángulo en radianes
+			PVector vecZ2=new PVector(0,0,10);
+			
+			
+			//Vector medio
+			PVector medio2=PVector.add(vecZ2,trans2);
+			stroke(134,15,200);
+			line(0,0,0,medio2.x,medio2.y,medio2.z);
+			
+			//Dibuja el cilindro raro
+			//tunnel.weirdCylinder(detail, radius,height, n, m)
+			float dist2=PVector.dist(frame2posIni,frame3posIni);
+			
+			PVector base=frame2.transformOfFrom(medio,frame1);
+			
+			tunnel.weirdCylinder(100,5,dist2,base,medio2);
+			
+		popMatrix();
+*/				
 
-	public void drawCone(float xa, float ya, float r1, float r2, float h1,float h2, PVector highest) {
-		noFill();
-		bezier(85, 20,50, 10, 10,10, 90, 90,90, 15, 80,30);
-		stroke(255, 102, 0);
-		int steps = 16;
-		float r = 10;
-		for (int i = 0; i <= steps; i++) {
-			float t = i / (float) (steps);
-			float x = bezierPoint(85, 10, 90, 15, t);
-			float y = bezierPoint(20, 10, 90, 80, t);
-			float z = bezierPoint(50, 10, 90, 30, t);
-			float tx = bezierTangent(85, 10, 90, 15, t);
-			float ty = bezierTangent(20, 10, 90, 80, t);
-			float tz = bezierTangent(50, 10, 90, 30, t);
-			float a = atan2(ty, tx);
-			a -= HALF_PI;
-			line(x, y,z, cos(a) * r + x, sin(a) * r + y,z);
-		}
-
-		// pushMatrix();
-		// stroke(255,0,0);
-		// line(0,0,0,20,0,h2);
-		// stroke(0,0,255);
-		// line(0,0,0,20,0,h1);
-		//
-		// stroke(0,255,0);
-		// float midHeight=h2+((h1-h2)/2);
-		// translate(0,0,midHeight);
-		//
-		// rotateX((float) (PI/3.0));
-		// ellipse(x,y,r2,r2);
-		// line(0,0,highest.x,highest.y);
-		//
-		// popMatrix();
-		//
-		//
-		// beginShape(TRIANGLE_STRIP);
-		// vertex(30, 75, 10);
-		// vertex(40, 20, 0);
-		// vertex(50, 75, 5);
-		// vertex(60, 20, 7);
-		// vertex(70, 75, 10);
-		// vertex(80, 20, 45);
-		// vertex(90, 75, 4);
-		// endShape();
 	}
 }
