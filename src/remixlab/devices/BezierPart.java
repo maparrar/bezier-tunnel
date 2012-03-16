@@ -22,6 +22,7 @@ public class BezierPart {
 		ini=vIni;
 		fin=vFin;
 		normalIni=vNormalIni;
+		normalFin=vNormalIni;
 		length=PVector.dist(ini, fin);
 	}
 }

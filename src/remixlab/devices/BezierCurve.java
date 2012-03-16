@@ -2,11 +2,18 @@ package remixlab.devices;
 
 import java.awt.Color;
 import java.util.ArrayList;
+
+import processing.core.PApplet;
 import processing.core.PVector;
+import remixlab.proscene.InteractiveFrame;
+import remixlab.proscene.Quaternion;
+import remixlab.proscene.Scene;
 /**
  * A BezierCurve is a curve like a painted by Processing function bezier().
  * */
 public class BezierCurve {
+	PApplet parent;
+	Scene scene;
 	PVector ini;		// Initial vector of the curve
 	PVector fin;		// Final vector of the curve
 	PVector ctrl1;		// First control point
@@ -22,9 +29,11 @@ public class BezierCurve {
 	 * 	@param point: is an anchor Point
 	 * 	@param ctrl1: is the first control point
 	 * */
-	public BezierCurve(PVector p,PVector c1){
+	public BezierCurve(PApplet p,Scene sc,PVector vFin,PVector c1){
+		parent = p;
+		scene = sc;
 		ini=new PVector(0, 0, 0);
-		fin=p;
+		fin=vFin;
 		ctrl1=c1;
 		ctrl2=new PVector(0, 0, 0);
 		color=new Color(0,0,255);
@@ -38,9 +47,11 @@ public class BezierCurve {
 	 * 	@param ctrl1: is the first control point
 	 *	@param col: is the Bezier Curve color
 	 * */
-	public BezierCurve(PVector p,PVector c1,Color col,int cantParts){
+	public BezierCurve(PApplet p,Scene sc,PVector vFin,PVector c1,Color col,int cantParts){
+		parent = p;
+		scene = sc;
 		ini=new PVector(0, 0, 0);
-		fin=p;
+		fin=vFin;
 		ctrl1=c1;
 		ctrl2=new PVector(0, 0, 0);
 		color=col;
@@ -65,11 +76,6 @@ public class BezierCurve {
 			iniPoint = getPoint(i * t);
 			finPoint = getPoint((i+1) * t);
 			
-			
-			
-			
-			
-			
 			if(i==0){
 				//part=new BezierPart(iniPoint,finPoint,new PVector(0,0,0));
 				//finPoint = getPoint((i+1) * t);
@@ -84,39 +90,44 @@ public class BezierCurve {
 				
 			}
 			
+			
+			
+			
 			part=new BezierPart(iniPoint,finPoint,normal);
+			
+			
+			
+			
+			
+			//part.ini=new PVector(0,0,0);
+			
+			parent.pushMatrix();
+				parent.pushStyle();
+					//Create an InteractiveFrame to draw the cylinder
+					InteractiveFrame iFrame = new InteractiveFrame(scene);
+					iFrame.setPosition(part.ini);
+					PVector to = PVector.sub(part.fin, iFrame.position());
+					iFrame.setOrientation(new Quaternion(new PVector(0, 0, 1), to));
+					iFrame.applyTransformation();
+					scene.drawAxis(10*1.3f);
+					
+					
+					
+					//part.ini=iFrame.transformOf(part.ini);
+					//part.fin=iFrame.transformOf(part.fin);
+					
+				parent.popStyle();
+			parent.popMatrix();
+		
+			
+			
+			
+			
+			
+			
 			parts.add(part);
 		}
-		
-		//System.out.println("Parts: "+parts.size());
-		
-//		//Calculate the last part
-//		BezierPart lastPart=parts.get(nParts-2);
-//		//Calculates the normal between parts
-//		PVector normal=PVector.add(lastPart.ini,iniPoint);
-//		part=new BezierPart(iniPoint,fin,new PVector(0,0,0));
-//		lastPart.normalFin=normal;
-//		parts.add(lastPart);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Get a PVector with a point defined by t parameter in the cubic Bezier curve
@@ -135,7 +146,6 @@ public class BezierCurve {
 		float z=(float) ((p0.z*Math.pow(1-t,3))+(3*p1.z*t*Math.pow(1-t,2))+(3*p2.z*Math.pow(t,2)*(1-t))+(p3.z*Math.pow(t,3)));
 		return new PVector(x,y,z);
 	}
-	
 	
 	/**
 	 * Return a string with data of the curve
