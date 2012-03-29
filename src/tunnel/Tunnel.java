@@ -9,6 +9,7 @@ import remixlab.devices.*;
 // TODO: Parameterize the Lights
 // TODO: Parameterize the Camera
 // TODO: Avoid the intersections
+// TODO: Lock the iFrames
 
 @SuppressWarnings("serial")
 public class Tunnel extends PApplet {
@@ -21,11 +22,11 @@ public class Tunnel extends PApplet {
 		
 		//PARAMETERS OF BEZIER TUNNEL
 		//Number of BezierCurves to create
-		int curves = 5;
+		int curves = 7;
 		//In many parts divide each BezierCurve
-		int parts=60;
+		int parts= 60;
 		//Detail of the Tunnel
-		int detail=50;
+		int detail= 60;
 		//Radius
 		float radius=5;
 		
