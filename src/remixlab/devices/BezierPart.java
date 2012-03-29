@@ -32,6 +32,7 @@ public class BezierPart {
 		parent = p;
 		scene = sc;
 		frame = new InteractiveFrame(scene);
+		frame.removeFromMouseGrabberPool();
 		ini=vIni;
 		fin=vFin;
 		normalIni=ini;
