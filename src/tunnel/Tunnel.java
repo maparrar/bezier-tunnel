@@ -4,7 +4,7 @@ import java.awt.Color;
 import processing.core.PApplet;
 import processing.core.PVector;
 import remixlab.proscene.*;
-import remixlab.devices.*;
+import remixlab.bezier.*;
 
 // TODO: Parameterize the Lights
 // TODO: Parameterize the Camera
@@ -22,7 +22,7 @@ public class Tunnel extends PApplet {
 		
 		//PARAMETERS OF BEZIER TUNNEL
 		//Number of BezierCurves to create
-		int curves = 7;
+		int curves = 3;
 		//In many parts divide each BezierCurve
 		int parts= 60;
 		//Detail of the Tunnel
@@ -51,5 +51,6 @@ public class Tunnel extends PApplet {
 		background(0);
 		lights();
 		tunnel.draw();
+		scene.camera().playPath(1);
 	}
 }
